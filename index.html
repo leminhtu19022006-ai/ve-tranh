@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thư Viện Tranh Nghệ Thuật</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #0f0f13;
+    color: #f0f0f0;
+    line-height: 1.6;
+  }
+
+  header {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 40px 20px;
+    text-align: center;
+    border-bottom: 2px solid #e94560;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  header h1 {
+    font-size: 2.2rem;
+    background: linear-gradient(90deg, #e94560, #f5a623, #e94560);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 1px;
+  }
+  header p { color: #aaa; margin-top: 6px; font-size: 0.95rem; }
+
+  .categories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    padding: 25px 20px;
+    background: #15151c;
+    border-bottom: 1px solid #2a2a3a;
+  }
+  .cat-btn {
+    padding: 10px 24px;
+    border: 2px solid #e94560;
+    background: transparent;
+    color: #e94560;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  .cat-btn:hover, .cat-btn.active {
+    background: #e94560;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(233,69,96,0.4);
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .card {
+    background: #1a1a24;
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    border: 1px solid #2a2a3a;
+  }
+  .card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(233,69,96,0.3);
+    border-color: #e94560;
+  }
+  .card-img-wrap {
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+    background: #0a0a0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+  .card:hover img { transform: scale(1.08); }
+  .card-info { padding: 18px; }
+  .card-info h3 { font-size: 1.15rem; margin-bottom: 6px; color: #fff; }
+  .card-info .artist { color: #e94560; font-size: 0.88rem; font-weight: 600; }
+  .card-info .year { color: #888; font-size: 0.82rem; margin-top: 4px; }
+
+  /* ảnh lỗi fallback */
+  .img-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: #555;
+    font-size: 3rem;
+    background: linear-gradient(135deg, #1a1a24, #0f0f13);
+  }
+  .img-fallback small {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 8px;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .modal.show { display: flex; }
+  .modal-content {
+    background: #1a1a24;
+    border-radius: 16px;
+    max-width: 950px;
+    width: 100%;
+    max-height: 92vh;
+    overflow-y: auto;
+    position: relative;
+    border: 2px solid #e94560;
+    animation: zoomIn 0.3s ease;
+  }
+  @keyframes zoomIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .modal-img-wrap {
+    width: 100%;
+    max-height: 55vh;
+    min-height: 300px;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .modal-img-wrap img {
+    max-width: 100%;
+    max-height: 55vh;
+    object-fit: contain;
+    display: block;
+  }
+  .modal-body { padding: 28px 32px; }
+  .modal-body h2 { font-size: 1.8rem; color: #f5a623; margin-bottom: 8px; }
+  .modal-body .artist-line {
+    color: #e94560;
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin-bottom: 18px;
+  }
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .detail-item {
+    background: #12121a;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border-left: 3px solid #e94560;
+  }
+  .detail-item .label { font-size: 0.78rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+  .detail-item .value { font-size: 1rem; color: #fff; font-weight: 600; margin-top: 2px; }
+  .desc { color: #ccc; font-size: 0.97rem; line-height: 1.8; }
+
+  .close-btn {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    background: #e94560;
+    color: #fff;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.2s;
+  }
+  .close-btn:hover { transform: rotate(90deg) scale(1.1); }
+
+  footer {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-size: 0.85rem;
+    border-top: 1px solid #2a2a3a;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.5rem; }
+    .gallery { padding: 20px; gap: 18px; }
+    .modal-body { padding: 20px; }
+    .modal-body h2 { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎨 Thư Viện Tranh Nghệ Thuật</h1>
+  <p>Khám phá những kiệt tác hội họa nổi tiếng thế giới</p>
+</header>
+
+<div class="categories" id="categories">
+  <button class="cat-btn active" data-cat="all">Tất cả</button>
+  <button class="cat-btn" data-cat="Phục Hưng">Phục Hưng</button>
+  <button class="cat-btn" data-cat="Ấn Tượng">Ấn Tượng</button>
+  <button class="cat-btn" data-cat="Hậu Ấn Tượng">Hậu Ấn Tượng</button>
+  <button class="cat-btn" data-cat="Lập Thể">Lập Thể</button>
+  <button class="cat-btn" data-cat="Siêu Thực">Siêu Thực</button>
+</div>
+
+<div class="gallery" id="gallery"></div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <button class="close-btn" id="closeBtn">×</button>
+    <div class="modal-img-wrap" id="modalImgWrap">
+      <img id="modalImg" src="" alt="">
+    </div>
+    <div class="modal-body">
+      <h2 id="modalTitle"></h2>
+      <div class="artist-line" id="modalArtist"></div>
+      <div class="detail-grid" id="modalDetails"></div>
+      <p class="desc" id="modalDesc"></p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2025 Thư Viện Tranh Nghệ Thuật · Bấm vào từng bức tranh để xem chi tiết
+</footer>
+
+<script>
+/* ===== DỮ LIỆU TRANH — dùng link Wikipedia ổn định ===== */
+const paintings = [
+  {
+    id: 1,
+    title: "Mona Lisa",
+    artist: "Leonardo da Vinci",
+    year: "1503 – 1519",
+    category: "Phục Hưng",
+    medium: "Sơn dầu trên gỗ dương",
+    size: "77 × 53 cm",
+    location: "Bảo tàng Louvre, Paris",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/480px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg",
+    desc: "Mona Lisa là bức chân dung nổi tiếng nhất thế giới của Leonardo da Vinci. Bức tranh gây ấn tượng bởi nụ cười bí ẩn của người phụ nữ và kỹ thuật sfumato điêu luyện. Đây được coi là kiệt tác đỉnh cao của thời kỳ Phục Hưng Ý."
+  },
+  {
+    id: 2,
+    title: "Đêm Đầy Sao",
+    artist: "Vincent van Gogh",
+    year: "1889",
+    category: "Hậu Ấn Tượng",
+    medium: "Sơn dầu trên vải",
+    size: "73,7 × 92,1 cm",
+    location: "Bảo tàng Nghệ thuật Hiện đại, New York",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/640px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
+    desc: "Được vẽ khi Van Gogh đang điều trị tại bệnh viện tâm thần Saint-Rémy, bức tranh tái hiện khung cảnh bầu trời đêm đầy xoáy cuộn và những ngôi sao rực sáng. Tác phẩm thể hiện cảm xúc mãnh liệt và trí tưởng tượng phong phú của danh họa."
+  },
+  {
+    id: 3,
+    title: "Tiếng Thét",
+    artist: "Edvard Munch",
+    year: "1893",
+    category: "Siêu Thực",
+    medium: "Sơn dầu, tempera trên bìa cứng",
+    size: "91 × 73,5 cm",
+    location: "Phòng trưng bày Quốc gia Na Uy, Oslo",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/The_Scream.jpg/480px-The_Scream.jpg",
+    desc: "Tiếng Thét là biểu tượng của chủ nghĩa biểu hiện. Bức tranh khắc họa nỗi lo âu, sợ hãi tột cùng của con người trước cuộc sống hiện đại. Hình ảnh người đàn ông ôm mặt thét lên trước bầu trời đỏ rực đã trở thành biểu tượng văn hóa toàn cầu."
+  },
+  {
+    id: 4,
+    title: "Cô Gái Đeo Khuyên Tai Ngọc Trai",
+    artist: "Johannes Vermeer",
+    year: "khoảng 1665",
+    category: "Phục Hưng",
+    medium: "Sơn dầu trên vải",
+    size: "44,5 × 39 cm",
+    location: "Mauritshuis, The Hague",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/480px-1665_Girl_with_a_Pearl_Earring.jpg",
+    desc: "Được mệnh danh là 'Mona Lisa phương Bắc', bức tranh khắc họa một cô gái trẻ với chiếc khuyên tai ngọc trai nổi bật. Ánh sáng và màu sắc trong tranh thể hiện kỹ thuật bậc thầy của Vermeer trong việc sử dụng ánh sáng tự nhiên."
+  },
+  {
+    id: 5,
+    title: "Sự Dai Dẳng Của Ký Ức",
+    artist: "Salvador Dalí",
+    year: "1931",
+    category: "Siêu Thực",
+    medium: "Sơn dầu trên vải",
+    size: "24 × 33 cm",
+    location: "MoMA, New York",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/The_Persistence_of_Memory.jpg/640px-The_Persistence_of_Memory.jpg",
+    desc: "Tác phẩm nổi tiếng nhất của Dalí với hình ảnh những chiếc đồng hồ tan chảy trên cành cây khô và khuôn mặt kỳ dị. Bức tranh thể hiện quan niệm về thời gian phi tuyến tính và tiềm thức con người trong trường phái Siêu thực."
+  },
+  {
+    id: 6,
+    title: "Hoa Súng",
+    artist: "Claude Monet",
+    year: "1906",
+    category: "Ấn Tượng",
+    medium: "Sơn dầu trên vải",
+    size: "89,9 × 94,1 cm",
+    location: "Bảo tàng Orsay, Paris",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg/640px-Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg",
+    desc: "Monet dành những năm cuối đời để vẽ khu vườn hoa súng tại Giverny. Loạt tranh Water Lilies gồm hơn 250 tác phẩm, thể hiện sự biến đổi của ánh sáng và màu nước qua từng thời điểm trong ngày."
+  },
+  {
+    id: 7,
+    title: "Les Demoiselles d'Avignon",
+    artist: "Pablo Picasso",
+    year: "1907",
+    category: "Lập Thể",
+    medium: "Sơn dầu trên vải",
+    size: "243,9 × 233,7 cm",
+    location: "MoMA, New York",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Les_Demoiselles_d%27Avignon.jpg/640px-Les_Demoiselles_d%27Avignon.jpg",
+    desc: "Tác phẩm đánh dấu bước ngoặt của nghệ thuật hiện đại, mở ra trường phái Lập thể. Picasso phá vỡ quan niệm truyền thống về phối cảnh, thể hiện năm người phụ nữ với khuôn mặt chịu ảnh hưởng từ nghệ thuật châu Phi."
+  },
+  {
+    id: 8,
+    title: "Đêm Trắng",
+    artist: "Edvard Munch",
+    year: "1901",
+    category: "Siêu Thực",
+    medium: "Sơn dầu trên vải",
+    size: "114 × 120 cm",
+    location: "Bảo tàng Quốc gia Na Uy",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Edvard_Munch_-_Night_in_St._Cloud_-_Google_Art_Project.jpg/640px-Edvard_Munch_-_Night_in_St._Cloud_-_Google_Art_Project.jpg",
+    desc: "Bức tranh khắc họa cảnh đêm huyền bí với những dải màu xanh lam và trắng. Munch thể hiện tâm trạng cô đơn và suy tư của con người trước thiên nhiên bao la."
+  },
+  {
+    id: 9,
+    title: "Bữa Tiệc Ly",
+    artist: "Leonardo da Vinci",
+    year: "1495 – 1498",
+    category: "Phục Hưng",
+    medium: "Tempera trên thạch cao",
+    size: "460 × 880 cm",
+    location: "Nhà thờ Santa Maria delle Grazie, Milan",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/%C3%9Altima_Cena_-_Da_Vinci_5.jpg/640px-%C3%9Altima_Cena_-_Da_Vinci_5.jpg",
+    desc: "Bức bích họa vĩ đại mô tả khoảnh khắc Chúa Jesus tuyên bố một trong các môn đệ sẽ phản bội Ngài. Da Vinci đã dành 3 năm để hoàn thành tác phẩm với kỹ thuật phối cảnh và biểu cảm nhân vật đỉnh cao."
+  },
+  {
+    id: 10,
+    title: "Ấn Tượng Mặt Trời Mọc",
+    artist: "Claude Monet",
+    year: "1872",
+    category: "Ấn Tượng",
+    medium: "Sơn dầu trên vải",
+    size: "48 × 63 cm",
+    location: "Bảo tàng Marmottan Monet, Paris",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Monet_-_Impression%2C_Sunrise.jpg/640px-Monet_-_Impression%2C_Sunrise.jpg",
+    desc: "Tác phẩm đã đặt tên cho cả trường phái Ấn Tượng. Bức tranh khắc họa cảnh cảng Le Havre trong ánh bình minh mờ ảo, với những nét cọ nhanh và màu sắc tươi sáng."
+  }
+];
+
+/* ===== RENDER GALLERY ===== */
+const gallery = document.getElementById('gallery');
+const catBtns = document.querySelectorAll('.cat-btn');
+
+function renderGallery(cat) {
+  const filtered = cat === 'all' ? paintings : paintings.filter(p => p.category === cat);
+  gallery.innerHTML = filtered.map(p => `
+    <div class="card" onclick="openModal(${p.id})">
+      <div class="card-img-wrap">
+        <img src="${p.img}" alt="${p.title}" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=&quot;img-fallback&quot;>🖼️<small>Không tải được ảnh</small></div>'">
+      </div>
+      <div class="card-info">
+        <h3>${p.title}</h3>
+        <div class="artist">${p.artist}</div>
+        <div class="year">${p.year} · ${p.category}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+catBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    catBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderGallery(btn.dataset.cat);
+  });
+});
+
+/* ===== MODAL ===== */
+const modal = document.getElementById('modal');
+const modalImg = document.getElementById('modalImg');
+const modalImgWrap = document.getElementById('modalImgWrap');
+const modalTitle = document.getElementById('modalTitle');
+const modalArtist = document.getElementById('modalArtist');
+const modalDetails = document.getElementById('modalDetails');
+const modalDesc = document.getElementById('modalDesc');
+
+function openModal(id) {
+  const p = paintings.find(x => x.id === id);
+  if (!p) return;
+
+  // reset wrap rồi thêm img mới để onerror hoạt động lại
+  modalImgWrap.innerHTML = '';
+  const newImg = document.createElement('img');
+  newImg.src = p.img;
+  newImg.alt = p.title;
+  newImg.onerror = () => {
+    modalImgWrap.innerHTML = '<div class="img-fallback">🖼️<small>Không tải được ảnh</small></div>';
+  };
+  modalImgWrap.appendChild(newImg);
+
+  modalTitle.textContent = p.title;
+  modalArtist.textContent = '👤 ' + p.artist;
+
+  modalDetails.innerHTML = `
+    <div class="detail-item"><div class="label">Năm sáng tác</div><div class="value">${p.year}</div></div>
+    <div class="detail-item"><div class="label">Trường phái</div><div class="value">${p.category}</div></div>
+    <div class="detail-item"><div class="label">Chất liệu</div><div class="value">${p.medium}</div></div>
+    <div class="detail-item"><div class="label">Kích thước</div><div class="value">${p.size}</div></div>
+    <div class="detail-item"><div class="label">Vị trí</div><div class="value">${p.location}</div></div>
+  `;
+  modalDesc.textContent = p.desc;
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  modal.classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('closeBtn').addEventListener('click', closeModal);
+modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+renderGallery('all');
+</script>
+</body>
+</html>
