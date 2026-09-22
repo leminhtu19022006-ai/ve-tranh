@@ -7,105 +7,333 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: #0f0f13;
-    color: #f0f0f0;
-    line-height: 1.6;
+  :root {
+    --pink: #e94560;
+    --gold: #f5a623;
+    --bg: #0f0f13;
+    --surface: #1a1a24;
+    --surface-2: #15151c;
+    --border: #2a2a3a;
+    --text: #f0f0f0;
+    --muted: #888;
+    --radius: 14px;
   }
 
-  header {
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
-    padding: 40px 20px;
-    text-align: center;
-    border-bottom: 2px solid #e94560;
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--pink); }
+
+  ::selection { background: var(--pink); color: #fff; }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    background: rgba(15, 15, 19, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
   }
-  header h1 {
-    font-size: 2.2rem;
-    background: linear-gradient(90deg, #e94560, #f5a623, #e94560);
+  .nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #fff;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .logo-icon {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--pink), var(--gold));
+    display: grid;
+    place-items: center;
+    font-size: 1.1rem;
+  }
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+  }
+  .nav-links a {
+    color: #ccc;
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+  .nav-links a.active { color: var(--pink); }
+
+  .search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .search-box input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 9px 14px 9px 38px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    width: 220px;
+    outline: none;
+    transition: all 0.25s;
+    font-family: inherit;
+  }
+  .search-box input::placeholder { color: #666; }
+  .search-box input:focus {
+    border-color: var(--pink);
+    box-shadow: 0 0 0 3px rgba(233,69,96,0.15);
+    width: 260px;
+  }
+  .search-box .search-icon {
+    position: absolute;
+    left: 12px;
+    color: #666;
+    font-size: 0.95rem;
+    pointer-events: none;
+  }
+
+  /* ===== HERO ===== */
+  header.hero {
+    padding: 70px 20px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, var(--bg) 60%);
+  }
+  header.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 15% 30%, rgba(233,69,96,0.18), transparent 45%),
+      radial-gradient(circle at 85% 70%, rgba(245,166,35,0.15), transparent 45%);
+    pointer-events: none;
+  }
+  header.hero h1 {
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    background: linear-gradient(90deg, var(--pink), var(--gold), var(--pink));
+    background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    position: relative;
+    animation: shine 4s linear infinite;
   }
-  header p { color: #aaa; margin-top: 6px; font-size: 0.95rem; }
+  @keyframes shine {
+    to { background-position: 200% center; }
+  }
+  header.hero p {
+    color: #a0a0b0;
+    margin-top: 12px;
+    font-size: 1rem;
+    position: relative;
+  }
 
+  /* ===== CATEGORIES ===== */
+  .categories-wrap {
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 63px;
+    z-index: 90;
+    backdrop-filter: blur(12px);
+  }
   .categories {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 12px;
-    padding: 25px 20px;
-    background: #15151c;
-    border-bottom: 1px solid #2a2a3a;
-  }
-  .cat-btn {
-    padding: 10px 24px;
-    border: 2px solid #e94560;
-    background: transparent;
-    color: #e94560;
-    border-radius: 30px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-  }
-  .cat-btn:hover, .cat-btn.active {
-    background: #e94560;
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(233,69,96,0.4);
-  }
-
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-    padding: 40px;
+    gap: 10px;
+    padding: 18px 20px;
     max-width: 1400px;
     margin: 0 auto;
   }
+  .cat-btn {
+    padding: 9px 20px;
+    border: 1.5px solid var(--pink);
+    background: transparent;
+    color: var(--pink);
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+  }
+  .cat-btn:hover {
+    background: rgba(233,69,96,0.12);
+    transform: translateY(-2px);
+  }
+  .cat-btn.active {
+    background: var(--pink);
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(233,69,96,0.4);
+  }
+  .cat-btn:focus-visible {
+    outline: 2px solid var(--pink);
+    outline-offset: 3px;
+  }
+  .cat-count {
+    opacity: 0.7;
+    font-weight: 500;
+    font-size: 0.82rem;
+    margin-left: 4px;
+  }
+
+  /* ===== GALLERY ===== */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 24px;
+    padding: 40px 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
   .card {
-    background: #1a1a24;
-    border-radius: 14px;
+    background: var(--surface);
+    border-radius: var(--radius);
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.35s ease, box-shadow 0.35s ease;
-    border: 1px solid #2a2a3a;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+                box-shadow 0.35s ease,
+                border-color 0.35s ease;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: cardIn 0.5s ease forwards;
+  }
+  @keyframes cardIn {
+    to { opacity: 1; transform: translateY(0); }
   }
   .card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 15px 35px rgba(233,69,96,0.3);
-    border-color: #e94560;
+    box-shadow: 0 20px 40px rgba(233,69,96,0.25);
+    border-color: var(--pink);
   }
+
   .card-img-wrap {
-    width: 100%;
-    height: 240px;
-    overflow: hidden;
-    background: #0a0a0f;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1a1a24, #0a0a0f);
   }
-  .card img {
+  .card-img-wrap img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.5s ease;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-  .card:hover img { transform: scale(1.08); }
-  .card-info { padding: 18px; }
-  .card-info h3 { font-size: 1.15rem; margin-bottom: 6px; color: #fff; }
-  .card-info .artist { color: #e94560; font-size: 0.88rem; font-weight: 600; }
-  .card-info .year { color: #888; font-size: 0.82rem; margin-top: 4px; }
+  .card:hover .card-img-wrap img { transform: scale(1.08); }
 
-  /* ảnh lỗi fallback */
+  .badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(15,15,19,0.85);
+    backdrop-filter: blur(8px);
+    color: var(--gold);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border: 1px solid rgba(245,166,35,0.3);
+  }
+
+  .fav-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(15,15,19,0.7);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: all 0.25s;
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  .card:hover .fav-btn { opacity: 1; transform: scale(1); }
+  .fav-btn:hover { background: var(--pink); transform: scale(1.1); }
+  .fav-btn.active { color: var(--pink); opacity: 1; transform: scale(1); }
+
+  .card-info {
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .card-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+    color: #fff;
+    line-height: 1.3;
+  }
+  .card-info .artist {
+    color: var(--pink);
+    font-size: 0.86rem;
+    font-weight: 600;
+  }
+  .card-info .year {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+  .card-link {
+    margin-top: 12px;
+    color: var(--pink);
+    font-weight: 600;
+    font-size: 0.88rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.25s;
+  }
+  .card:hover .card-link { gap: 10px; }
+
+  /* Fallback ảnh lỗi */
   .img-fallback {
     display: flex;
     flex-direction: column;
@@ -114,51 +342,67 @@
     width: 100%;
     height: 100%;
     color: #555;
-    font-size: 3rem;
+    font-size: 2.5rem;
     background: linear-gradient(135deg, #1a1a24, #0f0f13);
+    gap: 8px;
   }
-  .img-fallback small {
-    font-size: 0.8rem;
-    color: #666;
-    margin-top: 8px;
-  }
+  .img-fallback small { font-size: 0.78rem; color: #666; }
 
+  /* Empty state */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--muted);
+  }
+  .empty-state .emoji { font-size: 4rem; margin-bottom: 16px; opacity: 0.5; }
+  .empty-state h3 { color: #ccc; font-size: 1.3rem; margin-bottom: 8px; }
+  .empty-state p { font-size: 0.95rem; }
+
+  /* ===== MODAL ===== */
   .modal {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.92);
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(6px);
     z-index: 1000;
     justify-content: center;
     align-items: center;
     padding: 20px;
     overflow-y: auto;
+    animation: fadeIn 0.25s ease;
   }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   .modal.show { display: flex; }
+
   .modal-content {
-    background: #1a1a24;
-    border-radius: 16px;
+    background: var(--surface);
+    border-radius: 18px;
     max-width: 950px;
     width: 100%;
     max-height: 92vh;
     overflow-y: auto;
     position: relative;
-    border: 2px solid #e94560;
-    animation: zoomIn 0.3s ease;
+    border: 1px solid var(--border);
+    animation: zoomIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
   }
   @keyframes zoomIn {
-    from { transform: scale(0.85); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+    from { transform: scale(0.9) translateY(20px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
   }
+
   .modal-img-wrap {
     width: 100%;
     max-height: 55vh;
-    min-height: 300px;
+    min-height: 280px;
     background: #000;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    border-radius: 18px 18px 0 0;
   }
   .modal-img-wrap img {
     max-width: 100%;
@@ -166,88 +410,164 @@
     object-fit: contain;
     display: block;
   }
-  .modal-body { padding: 28px 32px; }
-  .modal-body h2 { font-size: 1.8rem; color: #f5a623; margin-bottom: 8px; }
-  .modal-body .artist-line {
-    color: #e94560;
-    font-weight: 600;
-    font-size: 1.05rem;
-    margin-bottom: 18px;
+
+  .modal-body { padding: 28px 32px 32px; }
+  .modal-body h2 {
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    color: var(--gold);
+    margin-bottom: 8px;
+    line-height: 1.25;
   }
+  .modal-body .artist-line {
+    color: var(--pink);
+    font-weight: 600;
+    font-size: 1.02rem;
+    margin-bottom: 20px;
+  }
+
   .detail-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 14px;
-    margin-bottom: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
   }
   .detail-item {
     background: #12121a;
     padding: 12px 16px;
     border-radius: 10px;
-    border-left: 3px solid #e94560;
+    border-left: 3px solid var(--pink);
   }
-  .detail-item .label { font-size: 0.78rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
-  .detail-item .value { font-size: 1rem; color: #fff; font-weight: 600; margin-top: 2px; }
-  .desc { color: #ccc; font-size: 0.97rem; line-height: 1.8; }
+  .detail-item .label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+  }
+  .detail-item .value {
+    font-size: 0.95rem;
+    color: #fff;
+    font-weight: 600;
+    margin-top: 3px;
+  }
+  .desc {
+    color: #c8c8d0;
+    font-size: 0.97rem;
+    line-height: 1.85;
+  }
 
   .close-btn {
     position: absolute;
     top: 14px;
-    right: 18px;
-    background: #e94560;
+    right: 16px;
+    background: var(--pink);
     color: #fff;
     border: none;
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
+    line-height: 1;
     cursor: pointer;
     z-index: 10;
-    transition: transform 0.2s;
+    transition: transform 0.3s ease, background 0.2s;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 14px rgba(233,69,96,0.4);
   }
   .close-btn:hover { transform: rotate(90deg) scale(1.1); }
 
+  /* ===== FOOTER ===== */
   footer {
     text-align: center;
-    padding: 30px;
+    padding: 40px 20px;
     color: #666;
     font-size: 0.85rem;
-    border-top: 1px solid #2a2a3a;
+    border-top: 1px solid var(--border);
     margin-top: 20px;
   }
+  footer .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  footer a {
+    color: #999;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  footer a:hover { color: var(--pink); }
 
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .search-box input { width: 160px; }
+    .search-box input:focus { width: 200px; }
+  }
   @media (max-width: 600px) {
-    header h1 { font-size: 1.5rem; }
-    .gallery { padding: 20px; gap: 18px; }
+    .nav-inner { padding: 12px 16px; gap: 12px; }
+    .logo span { display: none; }
+    .search-box input { width: 130px; }
+    .search-box input:focus { width: 160px; }
+    header.hero { padding: 50px 20px 40px; }
+    .categories-wrap { top: 59px; }
+    .categories { gap: 8px; padding: 14px 12px; }
+    .cat-btn { padding: 7px 14px; font-size: 0.82rem; }
+    .gallery { padding: 24px 16px; gap: 18px; }
     .modal-body { padding: 20px; }
-    .modal-body h2 { font-size: 1.4rem; }
+    .close-btn { width: 36px; height: 36px; top: 10px; right: 10px; }
   }
 </style>
 </head>
 <body>
 
-<header>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <span class="logo-icon">🎨</span>
+      <span>Art Gallery</span>
+    </a>
+    <div class="nav-links">
+      <a href="#" class="active">Trang chủ</a>
+      <a href="#gallery">Bộ sưu tập</a>
+      <a href="#footer">Giới thiệu</a>
+    </div>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Tìm tranh, tác giả...">
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
   <h1>🎨 Thư Viện Tranh Nghệ Thuật</h1>
   <p>Khám phá những kiệt tác hội họa nổi tiếng thế giới</p>
 </header>
 
-<div class="categories" id="categories">
-  <button class="cat-btn active" data-cat="all">Tất cả</button>
-  <button class="cat-btn" data-cat="Phục Hưng">Phục Hưng</button>
-  <button class="cat-btn" data-cat="Ấn Tượng">Ấn Tượng</button>
-  <button class="cat-btn" data-cat="Hậu Ấn Tượng">Hậu Ấn Tượng</button>
-  <button class="cat-btn" data-cat="Lập Thể">Lập Thể</button>
-  <button class="cat-btn" data-cat="Siêu Thực">Siêu Thực</button>
+<!-- CATEGORIES -->
+<div class="categories-wrap">
+  <div class="categories" id="categories">
+    <button class="cat-btn active" data-cat="all">Tất cả <span class="cat-count" id="count-all"></span></button>
+    <button class="cat-btn" data-cat="Phục Hưng">Phục Hưng <span class="cat-count" data-count="Phục Hưng"></span></button>
+    <button class="cat-btn" data-cat="Ấn Tượng">Ấn Tượng <span class="cat-count" data-count="Ấn Tượng"></span></button>
+    <button class="cat-btn" data-cat="Hậu Ấn Tượng">Hậu Ấn Tượng <span class="cat-count" data-count="Hậu Ấn Tượng"></span></button>
+    <button class="cat-btn" data-cat="Lập Thể">Lập Thể <span class="cat-count" data-count="Lập Thể"></span></button>
+    <button class="cat-btn" data-cat="Siêu Thực">Siêu Thực <span class="cat-count" data-count="Siêu Thực"></span></button>
+  </div>
 </div>
 
+<!-- GALLERY -->
 <div class="gallery" id="gallery"></div>
 
-<div class="modal" id="modal">
+<!-- MODAL -->
+<div class="modal" id="modal" role="dialog" aria-modal="true">
   <div class="modal-content">
-    <button class="close-btn" id="closeBtn">×</button>
-    <div class="modal-img-wrap" id="modalImgWrap">
-      <img id="modalImg" src="" alt="">
-    </div>
+    <button class="close-btn" id="closeBtn" aria-label="Đóng">×</button>
+    <div class="modal-img-wrap" id="modalImgWrap"></div>
     <div class="modal-body">
       <h2 id="modalTitle"></h2>
       <div class="artist-line" id="modalArtist"></div>
@@ -257,12 +577,19 @@
   </div>
 </div>
 
-<footer>
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="footer-links">
+    <a href="#">Trang chủ</a>
+    <a href="#gallery">Bộ sưu tập</a>
+    <a href="#">Liên hệ</a>
+    <a href="#">Giới thiệu</a>
+  </div>
   © 2025 Thư Viện Tranh Nghệ Thuật · Bấm vào từng bức tranh để xem chi tiết
 </footer>
 
 <script>
-/* ===== DỮ LIỆU TRANH — dùng link Wikipedia ổn định ===== */
+/* ===== DỮ LIỆU TRANH — link ảnh trực tiếp từ Wikimedia Commons ===== */
 const paintings = [
   {
     id: 1,
@@ -273,7 +600,7 @@ const paintings = [
     medium: "Sơn dầu trên gỗ dương",
     size: "77 × 53 cm",
     location: "Bảo tàng Louvre, Paris",
-    img: "https://en.wikipedia.org/wiki/Mona_Lisa",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/480px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg",
     desc: "Mona Lisa là bức chân dung nổi tiếng nhất thế giới của Leonardo da Vinci. Bức tranh gây ấn tượng bởi nụ cười bí ẩn của người phụ nữ và kỹ thuật sfumato điêu luyện. Đây được coi là kiệt tác đỉnh cao của thời kỳ Phục Hưng Ý."
   },
   {
@@ -285,7 +612,7 @@ const paintings = [
     medium: "Sơn dầu trên vải",
     size: "73,7 × 92,1 cm",
     location: "Bảo tàng Nghệ thuật Hiện đại, New York",
-    img: "https://vi.wikipedia.org/wiki/%C4%90%C3%AAm_%C4%91%E1%BA%A7y_sao",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/640px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
     desc: "Được vẽ khi Van Gogh đang điều trị tại bệnh viện tâm thần Saint-Rémy, bức tranh tái hiện khung cảnh bầu trời đêm đầy xoáy cuộn và những ngôi sao rực sáng. Tác phẩm thể hiện cảm xúc mãnh liệt và trí tưởng tượng phong phú của danh họa."
   },
   {
@@ -297,7 +624,7 @@ const paintings = [
     medium: "Sơn dầu, tempera trên bìa cứng",
     size: "91 × 73,5 cm",
     location: "Phòng trưng bày Quốc gia Na Uy, Oslo",
-    img: "https://vi.wikipedia.org/wiki/Ti%E1%BA%BFng_th%C3%A9t_(tranh)",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Edvard_Munch%2C_1893%2C_The_Scream%2C_oil%2C_tempera_and_pastel_on_cardboard%2C_91_x_73_cm%2C_National_Gallery_of_Norway.jpg/480px-Edvard_Munch%2C_1893%2C_The_Scream%2C_oil%2C_tempera_and_pastel_on_cardboard%2C_91_x_73_cm%2C_National_Gallery_of_Norway.jpg",
     desc: "Tiếng Thét là biểu tượng của chủ nghĩa biểu hiện. Bức tranh khắc họa nỗi lo âu, sợ hãi tột cùng của con người trước cuộc sống hiện đại. Hình ảnh người đàn ông ôm mặt thét lên trước bầu trời đỏ rực đã trở thành biểu tượng văn hóa toàn cầu."
   },
   {
@@ -386,83 +713,5 @@ const paintings = [
   }
 ];
 
-/* ===== RENDER GALLERY ===== */
-const gallery = document.getElementById('gallery');
-const catBtns = document.querySelectorAll('.cat-btn');
-
-function renderGallery(cat) {
-  const filtered = cat === 'all' ? paintings : paintings.filter(p => p.category === cat);
-  gallery.innerHTML = filtered.map(p => `
-    <div class="card" onclick="openModal(${p.id})">
-      <div class="card-img-wrap">
-        <img src="${p.img}" alt="${p.title}" loading="lazy"
-             onerror="this.parentNode.innerHTML='<div class=&quot;img-fallback&quot;>🖼️<small>Không tải được ảnh</small></div>'">
-      </div>
-      <div class="card-info">
-        <h3>${p.title}</h3>
-        <div class="artist">${p.artist}</div>
-        <div class="year">${p.year} · ${p.category}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-catBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    catBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderGallery(btn.dataset.cat);
-  });
-});
-
-/* ===== MODAL ===== */
-const modal = document.getElementById('modal');
-const modalImg = document.getElementById('modalImg');
-const modalImgWrap = document.getElementById('modalImgWrap');
-const modalTitle = document.getElementById('modalTitle');
-const modalArtist = document.getElementById('modalArtist');
-const modalDetails = document.getElementById('modalDetails');
-const modalDesc = document.getElementById('modalDesc');
-
-function openModal(id) {
-  const p = paintings.find(x => x.id === id);
-  if (!p) return;
-
-  // reset wrap rồi thêm img mới để onerror hoạt động lại
-  modalImgWrap.innerHTML = '';
-  const newImg = document.createElement('img');
-  newImg.src = p.img;
-  newImg.alt = p.title;
-  newImg.onerror = () => {
-    modalImgWrap.innerHTML = '<div class="img-fallback">🖼️<small>Không tải được ảnh</small></div>';
-  };
-  modalImgWrap.appendChild(newImg);
-
-  modalTitle.textContent = p.title;
-  modalArtist.textContent = '👤 ' + p.artist;
-
-  modalDetails.innerHTML = `
-    <div class="detail-item"><div class="label">Năm sáng tác</div><div class="value">${p.year}</div></div>
-    <div class="detail-item"><div class="label">Trường phái</div><div class="value">${p.category}</div></div>
-    <div class="detail-item"><div class="label">Chất liệu</div><div class="value">${p.medium}</div></div>
-    <div class="detail-item"><div class="label">Kích thước</div><div class="value">${p.size}</div></div>
-    <div class="detail-item"><div class="label">Vị trí</div><div class="value">${p.location}</div></div>
-  `;
-  modalDesc.textContent = p.desc;
-  modal.classList.add('show');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeModal() {
-  modal.classList.remove('show');
-  document.body.style.overflow = '';
-}
-
-document.getElementById('closeBtn').addEventListener('click', closeModal);
-modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-
-renderGallery('all');
-</script>
-</body>
-</html>
+/* ===== STATE ===== */
+const gallery = document.getElementById
